@@ -1,11 +1,13 @@
+#!/usr/bin/python
 import math
 import numpy.random as random
 
 
 overflow_time = [0]
 pos = []
-stddev = 200
-min_time = 100
+stddev = 500
+min_time = 400
+coefficient = 100
 
 # read file
 with open('positions.txt', 'r') as f:
@@ -27,7 +29,7 @@ def distance_to(i):
 
 for i in range(1, num_nodes):
     d = distance_to(i)
-    time = max(min_time, int(random.normal(loc=d, scale=stddev)))
+    time = coefficient * max(min_time, int(random.normal(loc=d, scale=stddev)))
     overflow_time.append(time)
 
 print(overflow_time)

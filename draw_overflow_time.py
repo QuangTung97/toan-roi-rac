@@ -1,8 +1,10 @@
+#!/usr/bin/python
 import matplotlib.pyplot as plt
 
 
 overflow_time = []
 pos = []
+coefficient = 100
 
 # read file
 with open('positions.txt', 'r') as f:
@@ -23,7 +25,7 @@ with open('overflow_time.txt', 'r') as f:
 
 X = [e[0] for e in pos]
 Y = [e[1] for e in pos]
-marksize = [t / 50.0 for t in overflow_time]
+marksize = [t / 50.0 / coefficient for t in overflow_time]
 
 plt.plot(X[0], Y[0], "o", color="r", ms=20)
 for i in range(0, num_nodes):

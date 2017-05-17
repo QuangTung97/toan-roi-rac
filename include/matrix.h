@@ -18,8 +18,8 @@ class MatrixReader;
 class Matrix {
 private:
 	friend MatrixReader;
-	unique_ptr<int[]> data;
 	int m, n;
+	unique_ptr<int[]> data;
 
 	/*            n                                        
 	  +------------------------+ j                         

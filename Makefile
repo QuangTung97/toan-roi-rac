@@ -1,5 +1,5 @@
 include = -Iinclude
-SRC = position_reader.cpp overflow_time.cpp matrix.cpp
+SRC = position_reader.cpp overflow_time.cpp matrix.cpp solver.cpp
 MAIN_ENTRY = main.cpp
 
 SRC_TEST = main.cpp

@@ -2,3 +2,4 @@ objs/*
 objs_tests/*
 main
 test
+*.swp
