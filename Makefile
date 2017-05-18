@@ -1,5 +1,5 @@
 include = -Iinclude
-SRC = position_reader.cpp overflow_time.cpp matrix.cpp solver.cpp
+SRC = position_reader.cpp overflow_time.cpp matrix.cpp solver.cpp path.cpp
 MAIN_ENTRY = main.cpp
 
 SRC_TEST = main.cpp
@@ -16,7 +16,7 @@ depends = $(SRC:%.cpp=objs/%.cpp.d)  	\
 	$(MAIN_ENTRY:%.cpp=objs/%.cpp.d) \
 	$(SRC_TEST:%.cpp=objs_tests/%.cpp.d)
 
-CC = g++ -std=c++11
+CC = g++ -std=c++11 -O3
 
 all: $(main)
 

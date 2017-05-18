@@ -52,27 +52,34 @@ struct SolverSettings {
     int num_lookahead = 4;
     int num_remain = 10;
     int num_units = 100;
+
+    float survive_ratio = 0.3;
+    float mutation_prob = 0.03;
 };
 
 
 class Solver {
 private:
     const Matrix &mat;
+    const std::vector<int> overflow_time;
+
+    // ------------------------------------------
+    // ------------- Settings -------------------
+    // ------------------------------------------
     const int num_vertices;
     const int max_travel_time;
     const int FITNESS_OVERFLOW_COEFFICIENT = 10;
-
-    int num_lookahead;
-    int num_remain;
-    int num_units;
+    const float survive_ratio;
+    const float mutation_prob;
+    const int num_lookahead;
+    const int num_remain;
+    const int num_units;
 
     std::vector<Unit> units;
 
-    const std::vector<int> overflow_time;
-
-    const float selection_rate = 0.3;
-    const float mutation_rate = 0.03;
-
+    // ------------------------------------------
+    // -------------- Random --------------------
+    // ------------------------------------------
     std::default_random_engine rand_engine;
     std::normal_distribution<> normal{2, 2};
     std::uniform_real_distribution<float> uniform{0, 1};
@@ -80,27 +87,29 @@ private:
     std::vector<RemainVertex> remains;
     std::vector<WeightedSum> weighted_sums;
 
-// private
-public:
+private:
     // ------------------------------------------
     // -------- For calculate_fitness -----------
     // ------------------------------------------
     float calculate_weighted_sum(const Unit& unit, int depth,
             RemainVertex &r, int v);
-    
     void get_next_remains(const Unit& unit);
     void choose_next_vertices(Unit& unit);
     void calculate_num_missed(Unit& unit);
     void calculate_overflow_rate(Unit& unit);
     void calculate_travel_cost(Unit& unit);
-
     void calculate_fitness_for_unit(Unit& unit);
     // -------- calculate_fitness -----------
 
     int get_travel_time(const Path& path);
 
+    // Cross and mutation
+    float make_float_by_swap_bits(float a, float b);
+    float random_switch_bits(float n);
+
     void init();
-    void calculate_fitness();
+    void calculate_fitness(float survive_ratio = 0.0);
+            
     void selection();
     void crossover();
     void mutation();
@@ -108,15 +117,14 @@ public:
 public:
     Solver(const Matrix &mat, 
         const std::vector<int>& overflow_time,
-        const int max_travel_time);
-
-    Solver(const Matrix &mat, 
-        const std::vector<int>& overflow_time,
         const int max_travel_time,
-        const SolverSettings& settings);
+        const SolverSettings& settings = SolverSettings{});
 
     void solve(int num_loops);
 
+    Path get_best() {
+        return units[0].path;
+    }
 };
 
 } // namespace tung

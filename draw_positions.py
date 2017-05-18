@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import matplotlib.pyplot as plt
 
 
@@ -19,6 +20,8 @@ print("Number of nodes: %d" % num_nodes)
 X = [e[0] for e in pos]
 Y = [e[1] for e in pos]
 
-plt.plot(X[0], Y[0], "o", color="r", ms=10)
-plt.plot(X[1:], Y[1:], "o", color="g", ms=3)
-plt.show()
+plt.plot(X[0], Y[0], "o", color="r", ms=20)
+plt.plot(X[1:], Y[1:], "o", color="g", ms=6)
+fig = plt.gcf()
+fig.set_size_inches(15, 15)
+fig.savefig("positions.png")

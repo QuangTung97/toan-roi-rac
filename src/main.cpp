@@ -4,11 +4,15 @@
 #include <iostream>
 #include <matrix.h>
 #include <solver.h>
+#include <string>
+#include <algorithm>
+#include <path.h>
+#include <chrono>
 
 
 using std::cout;
 using std::endl;
-
+using namespace std::chrono;
 
 int main() {
     tung::MatrixReader reader;
@@ -20,33 +24,26 @@ int main() {
 
     tung::SolverSettings settings;
     settings.num_remain = 10;
-    settings.num_units = 3;
-    settings.num_lookahead = 3;
-
-    tung::Unit unit;
-    tung::Unit::Weight w;
-    w.travel = 1;
-    w.timeout = 1;
-
-    // num_lookahead = 3
-    unit.weights.push_back(w);
-    unit.weights.push_back(w);
-    unit.weights.push_back(w);
+    settings.num_units = 400;
+    settings.num_lookahead = 4;
 
     tung::Solver solver{mat, overflow_time, 
-                        10000, settings};
-    solver.init();
+                        30000, settings};
+    auto t0 = steady_clock::now();
+    solver.solve(20);
+    auto t1 = steady_clock::now();
+    nanoseconds dt = t1 - t0;
 
-    cout << "---------------------------------\n";
-    solver.calculate_fitness_for_unit(unit);
+    cout << duration_cast<hours>(dt).count() << ":";
+    dt -= duration_cast<hours>(dt);
+    cout << duration_cast<minutes>(dt).count() << ":";
+    dt -= duration_cast<minutes>(dt);
+    cout << duration_cast<seconds>(dt).count() << "s  ";
+    dt -= duration_cast<seconds>(dt);
+    cout << duration_cast<milliseconds>(dt).count() << "ms" << endl;
 
-    printf("num_missed: %d \n", unit.num_missed);
-    printf("overflow_rate: %f \n", unit.overflow_rate);
-    printf("travel_cost: %f \n", unit.travel_cost);
-
-    tung::print_path(unit.path);
-    printf("%d\n", solver.get_travel_time(unit.path));
-    // solver.solve(1);
+    tung::PathWriter writer;
+    writer.write("result.txt", solver.get_best());
 	return 0;
 }
 

@@ -18,7 +18,8 @@ void print_path(const Path& path) {
 }
 
 // Less is better
-bool Unit::operator < (const Unit& other) const {
+bool Unit::operator < (const Unit& other) const 
+{
     if (num_missed < other.num_missed) {
         return true;
     }
@@ -45,33 +46,19 @@ bool Unit::operator < (const Unit& other) const {
 Solver::Solver(
         const Matrix& mat, 
         const std::vector<int>& overflow_time,
-        const int max_travel_time):
-    mat{mat}, num_vertices{mat.get_m()},
-    max_travel_time{max_travel_time}, 
-    overflow_time{overflow_time}
-{
-    SolverSettings settings;
-    num_lookahead = settings.num_lookahead;
-    num_remain = settings.num_remain;
-    num_units = settings.num_units;
-
-    units.reserve(num_units);
-    weighted_sums.reserve(num_lookahead * num_remain);
-}
-
-Solver::Solver(
-        const Matrix& mat, 
-        const std::vector<int>& overflow_time,
         const int max_travel_time,
         const SolverSettings& settings):
-    mat{mat}, num_vertices{mat.get_m()},
+    mat{mat}, 
+    overflow_time{overflow_time},
+    // Settings
+    num_vertices{mat.get_m()},
     max_travel_time{max_travel_time},
-    overflow_time{overflow_time}
+    survive_ratio{settings.survive_ratio},
+    mutation_prob{settings.mutation_prob},
+    num_lookahead{settings.num_lookahead},
+    num_remain{settings.num_remain},
+    num_units{settings.num_units}
 {
-    num_lookahead = settings.num_lookahead;
-    num_remain = settings.num_remain;
-    num_units = settings.num_units;
-
     units.reserve(num_units);
     weighted_sums.reserve(num_lookahead * num_remain);
 }
@@ -84,7 +71,7 @@ void Solver::solve(int num_loops) {
     for (int i = 0; i < num_loops; i++) {
         crossover();
         mutation();
-        calculate_fitness();
+        calculate_fitness(survive_ratio);
         selection();
     }
 }
@@ -109,9 +96,11 @@ void Solver::init() {
     }
 }
 
-void Solver::calculate_fitness() {
-    for (auto& unit: units) 
-        calculate_fitness_for_unit(unit);
+void Solver::calculate_fitness(float survive_ratio) {
+    int dead_index = int(num_units * survive_ratio);
+    auto begin_dead = units.begin() + dead_index;
+    for (auto it = begin_dead; it != units.end(); ++it) 
+        calculate_fitness_for_unit(*it);
 }
 
 void Solver::calculate_fitness_for_unit(Unit& unit) 
@@ -264,7 +253,7 @@ void Solver::calculate_num_missed(Unit& unit)
 
     size_t N = unit.path.size();
     for (size_t i = 0; i < N - 1; i++) {
-        visited[i] = true;
+        visited[unit.path[i]] = true;
     }
 
     unit.num_missed = std::count(visited.begin(),
@@ -310,7 +299,6 @@ void Solver::calculate_travel_cost(Unit& unit) {
         else
             travel_cost += overflow_time[path[i]] - current_time;
                 
-
         overflow_time[path[i]] = current_time
             + this->overflow_time[path[i]];
     }
@@ -319,12 +307,106 @@ void Solver::calculate_travel_cost(Unit& unit) {
 }
 
 void Solver::selection() {
+    std::sort(units.begin(), units.end());
+    printf("missed: %d, overflow_rate: %f, travel_cost: %f\n", 
+            units[0].num_missed, units[0].overflow_rate,
+            units[0].travel_cost);
+}
+
+float Solver::make_float_by_swap_bits(float a, float b) 
+{
+    union cast {
+        unsigned int i;
+        float f;
+    };
+
+    cast cast_a, cast_b;
+    cast_a.f = a;
+    cast_b.f = b;
+
+    bool a_is_low = uniform(rand_engine) < 0.5 ? true: false;
+    int partition = int(uniform(rand_engine) * (30 - 10) + 10);
+
+    unsigned int mask_high = 0xffffffff << partition;
+    unsigned int mask_low = ~mask_high;
+
+    unsigned int result;
+
+    if (a_is_low) 
+        result = (cast_a.i & mask_low) | (cast_b.i & mask_high);
+    else
+        result = (cast_b.i & mask_low) | (cast_a.i & mask_high);
+
+    cast cast_result;
+    cast_result.i = result;
+    return cast_result.f;
+}
+
+float Solver::random_switch_bits(float n) {
+    union cast {
+        unsigned int i;
+        float f;
+    };
+
+    cast cast_n;
+    cast_n.f = n;
+
+    for (int i = 0; i < 2; i++) {
+        int pos = uniform(rand_engine) * 31;
+        unsigned int mask = ~(1 << pos);
+        unsigned sw = ~cast_n.i;
+        cast_n.i = (cast_n.i & mask) | (sw & ~mask);
+    }
+
+    return cast_n.f;
 }
 
 void Solver::crossover() {
+    int dead_index = int(num_units * survive_ratio);
+    auto begin_dead = units.begin() + dead_index;
+    for (auto it = begin_dead; it != units.end(); ++it) {
+        int parent_a_index = 
+            int(uniform(rand_engine) * (dead_index - 1));
+        int parent_b_index = 
+            int(uniform(rand_engine) * 
+                    (dead_index - parent_a_index - 1) 
+                    + parent_a_index + 1);
+
+        Unit& parent_a = units[parent_a_index];
+        Unit& parent_b = units[parent_b_index];
+        Unit& unit = *it;
+
+        for (int j = 0; j < num_lookahead; j++) {
+            unit.weights[j].travel = 
+                make_float_by_swap_bits(
+                        parent_a.weights[j].travel,
+                        parent_b.weights[j].travel
+                );
+            unit.weights[j].timeout = 
+                make_float_by_swap_bits(
+                        parent_a.weights[j].timeout,
+                        parent_b.weights[j].timeout
+                );
+        }
+    }
 }
 
 void Solver::mutation() {
+    int dead_index = int(num_units * survive_ratio);
+    auto begin_dead = units.begin() + dead_index;
+    for (auto it = begin_dead; it != units.end(); ++it) {
+        for (int j = 0; j < num_lookahead; j++) {
+            float prob = uniform(rand_engine);
+            if (prob >= mutation_prob)
+                continue;
+
+            Unit& unit = *it;
+            unit.weights[j].travel = 
+                random_switch_bits(unit.weights[j].travel);
+            unit.weights[j].timeout = 
+                random_switch_bits(unit.weights[j].timeout);
+        }
+    }
 }
 
 

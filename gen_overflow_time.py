@@ -6,8 +6,8 @@ import numpy.random as random
 overflow_time = [0]
 pos = []
 stddev = 500
-min_time = 400
-coefficient = 100
+min_time = 300
+coefficient = 30
 
 # read file
 with open('positions.txt', 'r') as f:

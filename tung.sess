@@ -53,6 +53,11 @@ set shortmess=aoO
 badd +1 src/solver.cpp
 badd +1 include/solver.h
 badd +1 src/main.cpp
+badd +11 include/overflow_time.h
+badd +1 include/path.h
+badd +3 src/overflow_time.cpp
+badd +1 src/path.cpp
+badd +1 Makefile
 argglobal
 silent! argdel *
 argadd src/solver.cpp
@@ -193,12 +198,16 @@ normal! zc
 normal! zc
 51
 normal! zc
-let s:l = 61 - ((43 * winheight(0) + 20) / 40)
+61
+normal! zo
+125
+normal! zo
+let s:l = 126 - ((36 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-61
-normal! 027|
+126
+normal! 029|
 wincmd w
 argglobal
 edit src/solver.cpp
@@ -243,7 +252,7 @@ setlocal foldcolumn=0
 setlocal foldenable
 setlocal foldexpr=0
 setlocal foldignore=#
-setlocal foldlevel=4
+setlocal foldlevel=6
 setlocal foldmarker={{{,}}}
 set foldmethod=syntax
 setlocal foldmethod=syntax
@@ -315,151 +324,68 @@ setlocal wrapmargin=0
 normal! zo
 13
 normal! zo
-14
+13
+normal! zc
+22
 normal! zo
-20
+29
 normal! zo
-27
+107
 normal! zo
-78
+209
 normal! zo
-91
+209
+normal! zc
+239
 normal! zo
-96
-normal! zo
-116
-normal! zo
-119
-normal! zo
-122
-normal! zo
-157
-normal! zo
-180
-normal! zo
-213
-normal! zo
-21
-normal! zo
-28
-normal! zo
-79
-normal! zo
-92
-normal! zo
-97
-normal! zo
-117
-normal! zo
-120
-normal! zo
-123
-normal! zo
-158
-normal! zo
-181
-normal! zo
-214
-normal! zo
-21
-normal! zo
-28
-normal! zo
-52
-normal! zo
-79
-normal! zo
-92
-normal! zo
-97
-normal! zo
-118
-normal! zo
-147
-normal! zo
-148
-normal! zo
-151
-normal! zo
-152
-normal! zo
-220
-normal! zo
+239
+normal! zc
 250
 normal! zo
-261
-normal! zo
-275
-normal! zo
-296
-normal! zo
-70
-normal! zo
-79
-normal! zo
-92
-normal! zo
-97
-normal! zo
-118
-normal! zo
-147
-normal! zo
-148
-normal! zo
-151
-normal! zo
-152
-normal! zo
-220
-normal! zo
 250
-normal! zo
-261
-normal! zo
-275
-normal! zo
-296
-normal! zo
-79
-normal! zo
-92
-normal! zo
-97
-normal! zo
-118
-normal! zo
-147
-normal! zo
-148
-normal! zo
-151
-normal! zo
-152
-normal! zo
-220
-normal! zo
-250
-normal! zo
-261
-normal! zo
-261
 normal! zc
-275
+264
 normal! zo
-275
+264
 normal! zc
-296
+285
 normal! zo
-296
+285
 normal! zc
-let s:l = 330 - ((92 * winheight(0) + 20) / 40)
+309
+normal! zc
+317
+normal! zo
+317
+normal! zc
+345
+normal! zo
+354
+normal! zo
+364
+normal! zo
+367
+normal! zo
+394
+normal! zo
+397
+normal! zo
+364
+normal! zo
+367
+normal! zo
+394
+normal! zo
+397
+normal! zo
+let s:l = 359 - ((109 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-330
-normal! 0
+359
+normal! 05|
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 71 + 71) / 143)
 exe 'vert 2resize ' . ((&columns * 71 + 71) / 143)
 tabedit src/main.cpp
@@ -578,17 +504,17 @@ setlocal nowinfixheight
 setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
-13
+17
 normal! zo
-36
+30
 normal! zo
-let s:l = 37 - ((27 * winheight(0) + 20) / 41)
+let s:l = 28 - ((20 * winheight(0) + 20) / 41)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-37
-normal! 025|
-tabnext 2
+28
+normal! 030|
+tabnext 1
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
