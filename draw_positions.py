@@ -22,6 +22,13 @@ Y = [e[1] for e in pos]
 
 plt.plot(X[0], Y[0], "o", color="r", ms=20)
 plt.plot(X[1:], Y[1:], "o", color="g", ms=6)
+
+# put numbers
+i = 0
+for x, y in zip(X, Y):
+    plt.annotate(str(i), xy=(x, y))
+    i += 1
+
 fig = plt.gcf()
 fig.set_size_inches(15, 15)
 fig.savefig("positions.png")

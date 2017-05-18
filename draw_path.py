@@ -37,9 +37,16 @@ Y = [e[1] for e in pos]
 
 marksize = [t / 50.0 / coefficient for t in overflow_time]
 
+# Draw points
 plt.plot(X[0], Y[0], "o", color="r", ms=20)
-for i in range(0, num_nodes):
+for i in range(1, num_nodes):
     plt.plot(X[i], Y[i], "o", color="g", ms=marksize[i])
+
+# Put numbers
+i = 0
+for x, y in zip(X, Y):
+    plt.annotate(str(i), xy=(x, y))
+    i += 1
 
 # Draw path vector
 X = [pos[e][0] for e in path]

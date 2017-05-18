@@ -29,8 +29,13 @@ Y = [e[1] for e in pos]
 marksize = [t / 50.0 / coefficient for t in overflow_time]
 
 plt.plot(X[0], Y[0], "o", color="r", ms=20)
-for i in range(0, num_nodes):
+for i in range(1, num_nodes):
     plt.plot(X[i], Y[i], "o", color="g", ms=marksize[i])
+
+i = 0
+for x, y in zip(X, Y):
+    plt.annotate(str(i), xy=(x, y))
+    i += 1
 
 fig = plt.gcf()
 fig.set_size_inches(15, 15)
