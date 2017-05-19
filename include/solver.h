@@ -16,6 +16,12 @@ typedef std::vector<int> Path;
 void print_path(const Path& path);
 
 struct Unit {
+    Unit();
+    Unit(const Unit& other);
+    Unit(Unit&& other);
+    Unit& operator = (Unit&& other);
+    Unit& operator = (const Unit& other);
+
     int num_missed; // Number of vertices are not visited
     float overflow_rate;
     float travel_cost;

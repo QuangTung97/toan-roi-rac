@@ -17,6 +17,42 @@ void print_path(const Path& path) {
     printf("\n");
 }
 
+Unit::Unit() {}
+
+Unit::Unit(const Unit& other) {
+    num_missed = other.num_missed;
+    overflow_rate = other.overflow_rate;
+    travel_cost = other.travel_cost;
+    weights = other.weights;
+    path = other.path;
+}
+
+Unit::Unit(Unit&& other) {
+    num_missed = other.num_missed;
+    overflow_rate = other.overflow_rate;
+    travel_cost = other.travel_cost;
+    weights = std::move(other.weights);
+    path = std::move(other.path);
+}
+
+Unit& Unit::operator = (Unit&& other) {
+    num_missed = other.num_missed;
+    overflow_rate = other.overflow_rate;
+    travel_cost = other.travel_cost;
+    weights = std::move(other.weights);
+    path = std::move(other.path);
+    return *this;
+}
+
+Unit& Unit::operator = (const Unit& other) {
+    num_missed = other.num_missed;
+    overflow_rate = other.overflow_rate;
+    travel_cost = other.travel_cost;
+    weights = other.weights;
+    path = other.path;
+    return *this;
+}
+
 // Less is better
 bool Unit::operator < (const Unit& other) const 
 {
