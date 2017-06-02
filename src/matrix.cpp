@@ -10,7 +10,8 @@ namespace tung {
 
 Matrix::Matrix(): m{0}, n{0}, data{nullptr} {}
 
-Matrix::Matrix(int m, int n): m{m}, n{n}, data{new int[m * n]} 
+Matrix::Matrix(int m, int n): 
+    m{m}, n{n}, data{std::make_unique<int[]>(m * n)} 
 { 
 	const int max_int = std::numeric_limits<int>::max();
 	for (int i = 0; i < m; i++)
@@ -21,8 +22,9 @@ Matrix::Matrix(int m, int n): m{m}, n{n}, data{new int[m * n]}
 				(*this)(i, j) = max_int;
 }
 
-Matrix::Matrix(int m, int n, std::initializer_list<int> list):
-	m{m}, n{n}, data{new int[m * n]}
+Matrix::Matrix(int m, int n, 
+               std::initializer_list<int> list):
+	m{m}, n{n}, data{std::make_unique<int[]>(m * n)}
 {
 	const int max_int = std::numeric_limits<int>::max();
 	for (int i = 0; i < m; i++)
@@ -41,7 +43,8 @@ Matrix::Matrix(int m, int n, std::initializer_list<int> list):
 }
 
 Matrix::Matrix(const Matrix& other):
-	m{other.m}, n{other.n}, data{new int[m * n]} 
+	m{other.m}, n{other.n}, 
+    data{std::make_unique<int[]>(m * n)} 
 {
 	for (int i = 0; i < m * n; i++)
 		data[i] = other.data[i];
@@ -53,7 +56,7 @@ Matrix::Matrix(Matrix&& other) noexcept:
 Matrix& Matrix::operator = (const Matrix& other) {
 	m = other.m;
 	n = other.n;
-	data.reset(new int[m * n]);
+	data = std::make_unique<int[]>(m * n);
 
 	for (int i = 0; i < m * n; i++)
 		data[i] = other.data[i];
@@ -73,7 +76,7 @@ int& Matrix::operator () (int i, int j) noexcept {
 	return data[i * n + j];
 }
 
-const int Matrix::operator () (int i, int j) const noexcept {
+int Matrix::operator () (int i, int j) const noexcept {
 	return data[i * n + j];
 }
 

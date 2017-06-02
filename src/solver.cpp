@@ -402,7 +402,7 @@ void Solver::crossover() {
     auto begin_dead = units.begin() + dead_index;
     for (auto it = begin_dead; it != units.end(); ++it) {
         int parent_a_index = 
-            int(uniform(rand_engine) * (dead_index - 1));
+            int(uniform(rand_engine) * (dead_index - 0));
         int parent_b_index = 
             int(uniform(rand_engine) * 
                     (dead_index - parent_a_index - 1) 

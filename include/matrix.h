@@ -40,7 +40,7 @@ public:
 	Matrix& operator = (Matrix&& other) noexcept;
 
 	int& operator () (int i, int j) noexcept;
-	const int operator () (int i, int j) const noexcept;
+	int operator () (int i, int j) const noexcept;
 	
 	int get_m() const { return m;}
 	int get_n() const { return n;}

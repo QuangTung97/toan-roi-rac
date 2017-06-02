@@ -1,5 +1,3 @@
-objs/*
-objs_tests/*
-main
-test
+build
+build/*
 *.swp
