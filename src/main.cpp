@@ -14,6 +14,19 @@ using std::cout;
 using std::endl;
 using namespace std::chrono;
 
+nanoseconds get_next_remains_total_time = 0ns;
+
+void print_duration(nanoseconds dt) {
+    cout << duration_cast<hours>(dt).count() << ":";
+    dt -= duration_cast<hours>(dt);
+    cout << duration_cast<minutes>(dt).count() << ":";
+    dt -= duration_cast<minutes>(dt);
+    cout << duration_cast<seconds>(dt).count() << "s  ";
+    dt -= duration_cast<seconds>(dt);
+    cout << duration_cast<milliseconds>(dt).count() 
+         << "ms" << endl;
+}
+
 int main() {
     tung::MatrixReader reader;
     auto mat = reader.read("matrix.txt");
@@ -34,13 +47,10 @@ int main() {
     auto t1 = steady_clock::now();
     nanoseconds dt = t1 - t0;
 
-    cout << duration_cast<hours>(dt).count() << ":";
-    dt -= duration_cast<hours>(dt);
-    cout << duration_cast<minutes>(dt).count() << ":";
-    dt -= duration_cast<minutes>(dt);
-    cout << duration_cast<seconds>(dt).count() << "s  ";
-    dt -= duration_cast<seconds>(dt);
-    cout << duration_cast<milliseconds>(dt).count() << "ms" << endl;
+    cout << "Total time: ";
+    print_duration(dt);
+    cout << "Get next remains total time: ";
+    print_duration(get_next_remains_total_time);
 
     tung::PathWriter writer;
     writer.write("result.txt", solver.get_best());

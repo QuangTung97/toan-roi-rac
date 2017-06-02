@@ -2,7 +2,9 @@
 #include <ctime>
 #include <algorithm>
 #include <iostream>
+#include <chrono>
 
+extern std::chrono::nanoseconds get_next_remains_total_time;
 
 namespace tung {
 
@@ -170,6 +172,8 @@ void Solver::calculate_fitness_for_unit(Unit& unit)
 
 void Solver::get_next_remains(const Unit& unit) 
 {
+    auto t0 = std::chrono::system_clock::now();
+
     for (int depth = 0; depth < num_lookahead; depth++) {
         weighted_sums.clear();
 
@@ -182,7 +186,7 @@ void Solver::get_next_remains(const Unit& unit)
                                 remain, vertex);
                 WeightedSum wsum;
                 wsum.belong = &remain;
-                wsum.sum = sum;
+                wsum.sum = remain.sum + sum;
                 wsum.vertex_index = vertex;
                 weighted_sums.push_back(wsum);
             }
@@ -224,11 +228,16 @@ void Solver::get_next_remains(const Unit& unit)
                 remain.current_time + 
                 this->overflow_time[vertex_next];
 
+            remain.sum = wsum.sum;
+
             remain.path.push_back(vertex_next);
             
-            remains.push_back(remain);
+            remains.push_back(std::move(remain));
         }
     }
+
+    auto t1 = std::chrono::system_clock::now();
+    get_next_remains_total_time += t1 - t0;
 }
 
 float Solver::calculate_weighted_sum(const Unit &unit, int depth,

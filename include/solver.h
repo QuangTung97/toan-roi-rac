@@ -42,8 +42,14 @@ struct Unit {
 struct RemainVertex {
     int index;
     int current_time = 0;
-    std::vector<int> path = {0};
+    std::vector<int> path;
     std::vector<int> overflow_time;
+    float sum = 0.0;
+
+    RemainVertex() {
+        path.reserve(1000);
+        path.push_back(0);
+    }
 };
 
 
