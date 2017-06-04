@@ -18,8 +18,8 @@ void print_path(const Path& path);
 struct Unit {
     Unit();
     Unit(const Unit& other);
-    Unit(Unit&& other);
-    Unit& operator = (Unit&& other);
+    Unit(Unit&& other) noexcept;
+    Unit& operator = (Unit&& other) noexcept;
     Unit& operator = (const Unit& other);
 
     int num_missed; // Number of vertices are not visited
@@ -35,7 +35,7 @@ struct Unit {
     Path path;
 
     // Less is better
-    bool operator < (const Unit& other) const;
+    bool operator < (const Unit& other) const noexcept;
 };
 
 

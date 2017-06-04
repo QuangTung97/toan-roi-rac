@@ -29,7 +29,7 @@ Unit::Unit(const Unit& other) {
     path = other.path;
 }
 
-Unit::Unit(Unit&& other) {
+Unit::Unit(Unit&& other) noexcept {
     num_missed = other.num_missed;
     overflow_rate = other.overflow_rate;
     travel_cost = other.travel_cost;
@@ -37,7 +37,7 @@ Unit::Unit(Unit&& other) {
     path = std::move(other.path);
 }
 
-Unit& Unit::operator = (Unit&& other) {
+Unit& Unit::operator = (Unit&& other) noexcept {
     num_missed = other.num_missed;
     overflow_rate = other.overflow_rate;
     travel_cost = other.travel_cost;
@@ -56,7 +56,7 @@ Unit& Unit::operator = (const Unit& other) {
 }
 
 // Less is better
-bool Unit::operator < (const Unit& other) const 
+bool Unit::operator < (const Unit& other) const noexcept
 {
     if (num_missed < other.num_missed) {
         return true;
