@@ -4,7 +4,8 @@
 #include <iostream>
 #include <chrono>
 
-extern std::chrono::nanoseconds get_next_remains_total_time;
+extern std::chrono::nanoseconds fitness_total_time;
+extern std::chrono::nanoseconds fitness_sub_total_time;
 
 namespace tung {
 
@@ -116,7 +117,8 @@ void Solver::solve(int num_loops) {
 
 void Solver::init() {
     // Init random engine
-    rand_engine.seed(time(nullptr));
+    std::random_device rd;
+    rand_engine.seed(rd());
 
     // Init all weights of all units
     for (int i = 0; i < num_units; i++) {
@@ -143,17 +145,16 @@ void Solver::calculate_fitness(float survive_ratio) {
 
 void Solver::calculate_fitness_for_unit(Unit& unit) 
 {
-    // init remains before continous get_next
-    RemainVertex remain;
-    remain.index = 0;
-    remain.current_time = 0;
-    remain.overflow_time = overflow_time;
-
-    remains.clear();
-    remains.push_back(remain);
-
     // Init path of unit
     unit.path = {0};
+
+    RemainVertex first;
+    first.index = 0;
+    first.current_time = 0;
+    first.overflow_time = this->overflow_time;
+
+    remains.clear();
+    remains.push_back(first);
     
     // Do something here
     auto is_terminated = [](const Path& path)->bool {
@@ -161,6 +162,14 @@ void Solver::calculate_fitness_for_unit(Unit& unit)
     };
 
     while (!is_terminated(unit.path)) {
+        // init remains before continous get_next
+        auto remain = remains[0];
+        remain.sum = 0;
+        remain.path.clear();
+
+        remains.clear();
+        remains.push_back(remain);
+
         get_next_remains(unit);
         choose_next_vertices(unit);
     }
@@ -172,10 +181,12 @@ void Solver::calculate_fitness_for_unit(Unit& unit)
 
 void Solver::get_next_remains(const Unit& unit) 
 {
-    auto t0 = std::chrono::system_clock::now();
+    auto t0 = std::chrono::steady_clock::now();
 
     for (int depth = 0; depth < num_lookahead; depth++) {
         weighted_sums.clear();
+
+        auto t2 = std::chrono::steady_clock::now();
 
         for (auto& remain: remains) {
             for (int vertex = 1; vertex < num_vertices; vertex++) {
@@ -198,7 +209,12 @@ void Solver::get_next_remains(const Unit& unit)
                 return a.sum < b.sum;
         });
 
-        std::vector<RemainVertex> tmp_remains(num_remain);
+        auto t3 = std::chrono::steady_clock::now();
+        fitness_sub_total_time += t3 - t2;
+
+        std::vector<RemainVertex> tmp_remains;
+        tmp_remains.reserve(num_remain);
+
         size_t N = std::min((size_t)num_remain, 
                 weighted_sums.size());
 
@@ -236,8 +252,8 @@ void Solver::get_next_remains(const Unit& unit)
         }
     }
 
-    auto t1 = std::chrono::system_clock::now();
-    get_next_remains_total_time += t1 - t0;
+    auto t1 = std::chrono::steady_clock::now();
+    fitness_total_time += t1 - t0;
 }
 
 float Solver::calculate_weighted_sum(const Unit &unit, int depth,
@@ -253,13 +269,17 @@ float Solver::calculate_weighted_sum(const Unit &unit, int depth,
 void Solver::choose_next_vertices(Unit& unit) 
 {
     const auto& best = remains[0];
+    // append
+    unit.path.insert(unit.path.end(), 
+                    best.path.begin(),
+                    best.path.end());
+
     if (best.current_time < max_travel_time) {
-        unit.path = best.path;
         return;
     }
 
     int current_time = best.current_time;
-    Path path = best.path;
+    auto& path = unit.path;
 
     int end = path.back();
     path.push_back(0);
@@ -276,8 +296,6 @@ void Solver::choose_next_vertices(Unit& unit)
         current_time += mat(vertex_prev, 0);
         path.erase(vertex_current_it);
     }
-
-    unit.path = path;
 }
 
 int Solver::get_travel_time(const Path& path) 
@@ -404,8 +422,7 @@ float Solver::random_switch_bits(float n) {
     }
 
     return cast_n.f;
-}
-
+} 
 void Solver::crossover() {
     int dead_index = int(num_units * survive_ratio);
     auto begin_dead = units.begin() + dead_index;

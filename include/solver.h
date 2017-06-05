@@ -92,7 +92,7 @@ private:
     // ------------------------------------------
     // -------------- Random --------------------
     // ------------------------------------------
-    std::default_random_engine rand_engine;
+    std::mt19937 rand_engine;
     std::normal_distribution<> normal{2, 2};
     std::uniform_real_distribution<float> uniform{0, 1};
 

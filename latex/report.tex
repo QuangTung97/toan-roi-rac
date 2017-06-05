@@ -3,6 +3,7 @@
 \usepackage[utf8]{vietnam}
 \usepackage[left=3cm, right=3cm, top=3cm, bottom =3cm]{geometry}
 \usepackage{pdfpages}
+\usepackage{fancybox}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{etoolbox}
@@ -50,11 +51,46 @@
 {\normalfont\large\sffamily\bfseries}{\thesubsubsection}{1em}{}
 
 \begin{document}
+\thispagestyle{empty}
+\thisfancypage{
+\setlength{\fboxsep}{0pt}
+\fbox}{} 
+\begin{center}
+\begin{large}
+
+TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI
+\end{large} \\
+\begin{large}
+VIỆN CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+\end{large} \\
+\textbf{--------------------  *  ---------------------}\\[5.5cm]
+{\fontsize{30pt}{1}\selectfont \textbf{BÁO CÁO MÔN HỌC}}\\
+{\fontsize{20pt}{1}\selectfont BÀI TẬP LỚN TOÁN RỜI RẠC}\\[5mm]
+{\fontsize{18pt}{1}\selectfont CONNECTIVITY IN SENSOR NETWORKS}\\
+[2cm]
+
+
+\begin{tabular}{ r l}
+\textbf{Giáo viên hướng dẫn}:& PGS. Huỳnh Thị Thanh Bình\\
+\\
+\textbf{Nhóm sinh viên thực hiện} :& Tạ Quang Tùng \\ 
+ 					 		  & Đỗ Tiến Đạt \\
+ 					          & Nguyễn Minh Quang\\	
+ 					          & Nguyễn Văn Trung \\
+\textbf{Lớp} :& KSTN CNTT K60 \\ 
+\end{tabular} 
+\vspace{3.7cm}
+
+{\fontsize{14pt}{1}\selectfont  HÀ NỘI}\\
+{\fontsize{14pt}{1}\selectfont \today}
+\end{center}
+\newpage
+
 \tableofcontents
 \newpage 
 
 \section{Giới thiệu}
-Những năm gần đây đã có sự tăng lên của việc sử dụng mạng sensor để thu thập, đo đạc môi trường. Điều đó đã dẫn đến nhiều những bài toán trong lý thuyết và thực tế về giao thức thu thập và truyền giữ liệu của các sensor.  Ví dụ, mạng sensor có thể được sử dụng để đo đạc mức độ ô nhiễm tại những địa điểm khác nhau trong một khu công nghiệp. Sẽ có những vị trí có mức ô nhiễm cao hơn những vị trí khác. Vì vậy, tại những vị trị khác nhau, tần suất đo đạc, thu lượm dữ liệu của các sensor cũng khác nhau. 
+Những năm gần đây đã có sự tăng lên của việc sử dụng mạng sensor để thu thập, đo đạc môi trường. Điều đó đã dẫn đến nhiều những bài toán trong lý thuyết và thực tế về giao thức thu thập và truyền giữ liệu của các sensor.  Ví dụ, mạng sensor có thể được sử dụng để đo đạc mức độ ô nhiễm tại những địa điểm khác nhau trong một khu công nghiệp. Sẽ có những vị trí có mức ô nhiễm cao hơn những vị trí khác. Vì vậy, tại những vị trị khác nhau, tần suất đo đạc, thu lượm dữ liệu của các sensor cũng khác nhau. \cite{somasundara2004mobile}
 	
 	Dữ liệu được đo đạc bởi các sensor cần phải được chuyển về một trạm  cơ sở (base station) để được xử lý, phân tích. Thông thường, dữ liệu ghi bởi sensor sẽ được truyền về base station thông qua mạng các sensor nối kết nhau. Giải pháp đó là khả thi nhưng dễ dẫn đến hiện tượng quá tải đường truyền tại một số vị trí nào đó (bottleneck). Những sensor ở gần base station sẽ phải chuyển tiếp dữ liệu từ những sensor ở xa gửi đến, đồng thời phải gửi cả dữ liệu của bản thân sensor đó. Điều này dẫn đến những sensor ở gần phải hoạt động với tần suất cao hơn, lượng pin vì thế cũng cạn kiệt nhanh hơn. Hơn nữa, nếu một nút trong mạng hỏng có thể dẫn đến một lượng lớn các sensor không thể gửi dữ liệu về base. Ở một mạng sensor có kích thước lớn, những vấn đề trên càng trở nên khó giải quyết, khó được áp dụng trong thực tế. 
 	
@@ -207,4 +243,12 @@ Trong đó hàm $switch\_random\_bit(a)$ thực hiện chuyển $a$ thành biể
 \item Thuật toán có thể được mở rộng cho trường hợp nhiều phần tử di động. 
 \end{itemize}
 
+\begin{thebibliography}{9}
+
+\bibitem{somasundara2004mobile}
+  Somasundara, Arun A and Ramamoorthy, Aditya and Srivastava, Mani B,
+  \textit{Mobile element scheduling for efficient data collection in wireless sensor networks with dynamic deadlines},
+  Real-Time Systems Symposium, 2004. Proceedings. 25th IEEE International, pages 296--305
+
+\end{thebibliography}
 \end{document}

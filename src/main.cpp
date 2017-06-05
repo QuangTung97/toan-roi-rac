@@ -14,7 +14,8 @@ using std::cout;
 using std::endl;
 using namespace std::chrono;
 
-nanoseconds get_next_remains_total_time = 0ns;
+nanoseconds fitness_total_time = 0ns;
+nanoseconds fitness_sub_total_time = 0ns;
 
 void print_duration(nanoseconds dt) {
     cout << duration_cast<hours>(dt).count() << ":";
@@ -38,19 +39,21 @@ int main() {
     tung::SolverSettings settings;
     settings.num_remain = 10;
     settings.num_units = 400;
-    settings.num_lookahead = 4;
+    settings.num_lookahead = 5;
 
     tung::Solver solver{mat, overflow_time, 
                         30000, settings};
     auto t0 = steady_clock::now();
-    solver.solve(20);
+    solver.solve(40);
     auto t1 = steady_clock::now();
     nanoseconds dt = t1 - t0;
 
     cout << "Total time: ";
     print_duration(dt);
     cout << "Get next remains total time: ";
-    print_duration(get_next_remains_total_time);
+    print_duration(fitness_total_time);
+    cout << "Get next remains sub total time: ";
+    print_duration(fitness_sub_total_time);
 
     tung::PathWriter writer;
     writer.write("result.txt", solver.get_best());
