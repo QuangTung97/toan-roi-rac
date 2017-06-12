@@ -66,7 +66,7 @@ struct SolverSettings {
     int num_units = 100;
 
     float survive_ratio = 0.3;
-    float mutation_prob = 0.03;
+    float mutation_prob = 0.05;
 };
 
 

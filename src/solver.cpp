@@ -66,6 +66,7 @@ bool Unit::operator < (const Unit& other) const noexcept
         return false;
     }
     else {
+        /*
         if (overflow_rate < other.overflow_rate) {
             return true;
         }
@@ -77,7 +78,8 @@ bool Unit::operator < (const Unit& other) const noexcept
                 return true;
             else
                 return false;
-        }
+        } */
+        return overflow_rate < other.overflow_rate;
     }
 }
 
@@ -176,7 +178,7 @@ void Solver::calculate_fitness_for_unit(Unit& unit)
 
     calculate_num_missed(unit);
     calculate_overflow_rate(unit);
-    calculate_travel_cost(unit);
+    // calculate_travel_cost(unit);
 }
 
 void Solver::get_next_remains(const Unit& unit) 
@@ -371,9 +373,10 @@ void Solver::calculate_travel_cost(Unit& unit) {
 
 void Solver::selection() {
     std::sort(units.begin(), units.end());
-    printf("missed: %d, overflow_rate: %f, travel_cost: %f\n", 
-            units[0].num_missed, units[0].overflow_rate,
-            units[0].travel_cost);
+    static int loop = 1;
+    printf("loop %d: missed: %d, overflow_rate: %f\n", loop++,
+            units[0].num_missed, units[0].overflow_rate);
+            // units[0].travel_cost);
 }
 
 float Solver::make_float_by_swap_bits(float a, float b) 

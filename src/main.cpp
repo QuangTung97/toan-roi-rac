@@ -34,7 +34,7 @@ int main() {
 
     tung::OverflowTime time_reader;
     auto overflow_time = time_reader.read("overflow_time.txt");
-    tung::print_path(overflow_time);
+    // tung::print_path(overflow_time);
 
     tung::SolverSettings settings;
     settings.num_remain = 10;
